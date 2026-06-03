@@ -2,9 +2,6 @@
 
 Personal portfolio website built with HTML, CSS, and JavaScript.
 
-## 🔗 Live Demo
-[View Portfolio](https://spider-man-spec.github.com/Swathi-s-Portfolio/)
-
 ## ✨ Features
 - Dark / Light theme toggle
 - Smooth scroll animations
