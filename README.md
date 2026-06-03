@@ -3,7 +3,7 @@
 Personal portfolio website built with HTML, CSS, and JavaScript.
 
 ## 🔗 Live Demo
-[View Portfolio](https://spider-man-spec.github.com/Swathi-s-Portfolio/)
+[View Portfolio](https://github.com/Spider-Man-spec/Swathi-s-Portfolio)
 
 ## ✨ Features
 - Dark / Light theme toggle
