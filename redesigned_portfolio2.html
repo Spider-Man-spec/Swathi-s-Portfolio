@@ -1013,11 +1013,61 @@ body::before {
 }
 
 /* ==============================
-   SKILLS
+   SKILLS — ADVANCED ANIMATED
 ============================== */
 .skills-section { background: var(--bg-primary); }
 
-/* Stat counters row */
+/* ---- Tab filter bar ---- */
+.skills-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 44px;
+  flex-wrap: wrap;
+}
+
+.skills-filter-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 20px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.skills-filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.skills-filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 18px var(--accent-glow);
+}
+
+.skills-filter-btn .filter-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: rgba(255,255,255,0.2);
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.skills-filter-btn:not(.active) .filter-count {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+}
+
+/* ---- Stat counters row ---- */
 .skills-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1034,7 +1084,22 @@ body::before {
   padding: 28px 24px;
   text-align: center;
   position: relative;
+  overflow: hidden;
+  transition: var(--transition);
 }
+
+.skills-stat::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.skills-stat:hover::before { transform: scaleX(1); }
 
 .skills-stat-num {
   font-size: 42px;
@@ -1056,129 +1121,348 @@ body::before {
   letter-spacing: 0.1em;
 }
 
-/* Skill category cards */
+/* ---- Main skills grid ---- */
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  margin-bottom: 44px;
+  margin-bottom: 56px;
 }
 
+.skill-cat[data-category] { transition: opacity 0.35s ease, transform 0.35s ease; }
+.skill-cat.hidden { display: none; }
+
+/* ---- Skill Category Card ---- */
 .skill-cat {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 26px;
+  padding: 28px 26px 26px;
   transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+/* animated corner glow on hover */
+.skill-cat::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+  border-radius: 3px 3px 0 0;
+}
+
+.skill-cat::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top left, var(--accent-glow) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
 }
 
 .skill-cat:hover {
-  border-color: rgba(200,82,42,0.3);
-  box-shadow: 0 0 40px var(--accent-glow);
-  transform: translateY(-4px);
+  border-color: rgba(200,82,42,0.35);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.2), 0 0 40px var(--accent-glow);
+  transform: translateY(-6px);
 }
+
+.skill-cat:hover::before { transform: scaleX(1); }
+.skill-cat:hover::after { opacity: 1; }
 
 .skill-cat-header {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 22px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 24px;
+  position: relative; z-index: 1;
 }
 
-.skill-cat-icon { font-size: 22px; }
-.skill-cat-header h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); }
-
-.skill-bar { margin-bottom: 16px; }
-.skill-bar:last-child { margin-bottom: 0; }
-
-.skill-bar-head {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 7px;
+.skill-cat-icon-wrap {
+  width: 44px; height: 44px;
+  border-radius: 13px;
+  background: var(--accent-subtle);
+  border: 1px solid rgba(200,82,42,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
 }
 
-.skill-bar-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-.skill-bar-pct { font-family: var(--font-mono); font-size: 11.5px; color: var(--accent); }
+.skill-cat:hover .skill-cat-icon-wrap {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.1) rotate(-6deg);
+  box-shadow: 0 6px 20px var(--accent-glow);
+}
 
-.skill-track {
-  height: 5px;
+.skill-cat-header h3 {
+  font-size: 16px; font-weight: 700; color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.skill-cat-count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
   background: var(--bg-secondary);
-  border-radius: 3px;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* ---- Skill Pill Tags (replaces bars) ---- */
+.skill-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  position: relative; z-index: 1;
+}
+
+.skill-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-secondary);
+  cursor: default;
   overflow: hidden;
-  position: relative;
+  /* staggered entrance */
+  opacity: 0;
+  transform: translateY(14px) scale(0.94);
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34,1.56,0.64,1),
+              border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
 }
 
-.skill-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
-  border-radius: 3px;
-  width: 0;
-  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+/* entrance triggered by JS */
+.skill-pill.pill-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-.skill-fill.animated::after {
+/* shimmer sweep on entrance */
+.skill-pill::before {
   content: '';
   position: absolute;
-  top: 0; right: -40px;
-  width: 40px; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
-  animation: shimmerBar 1.5s ease 1.2s forwards;
+  top: 0; left: -80px;
+  width: 60px; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+  transform: skewX(-15deg);
+  transition: none;
 }
 
-@keyframes shimmerBar {
-  0% { opacity: 1; transform: translateX(0); }
-  100% { opacity: 0; transform: translateX(60px); }
+.skill-pill.pill-visible::before {
+  animation: pillShimmer 0.7s ease forwards;
+  animation-delay: var(--pill-shimmer-delay, 0.3s);
 }
 
-/* tech cards */
-.core-label { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 18px; }
+@keyframes pillShimmer {
+  0%   { left: -80px; opacity: 1; }
+  100% { left: 120%; opacity: 0; }
+}
+
+/* hover glow ring */
+.skill-pill:hover {
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 16px var(--accent-glow);
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* pill icon */
+.pill-icon {
+  font-size: 15px;
+  line-height: 1;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.skill-pill:hover .pill-icon {
+  transform: rotate(-12deg) scale(1.2);
+}
+
+/* pill name */
+.pill-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* pill level badge */
+.pill-level {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pill-level.expert   { background: rgba(16,185,129,0.15);  color: #10b981; }
+.pill-level.advanced { background: rgba(200,82,42,0.15);   color: var(--accent-light); }
+.pill-level.inter    { background: rgba(245,158,11,0.15);  color: #f59e0b; }
+.pill-level.learning { background: rgba(148,163,184,0.12); color: var(--text-muted); }
+
+/* live pulse dot on expert pills */
+.pill-pulse {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.pill-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: rgba(16,185,129,0.35);
+  animation: pillPulse 2s ease-in-out infinite;
+}
+
+@keyframes pillPulse {
+  0%,100% { transform: scale(1); opacity: 0.8; }
+  50%      { transform: scale(1.7); opacity: 0; }
+}
+
+/* ---- Tech cards ---- */
+.core-label {
+  font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 18px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.core-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
 .tech-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 12px;
   margin-bottom: 36px;
 }
 
 .tech-card {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px;
   background: var(--bg-card);
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
-  transition: var(--transition);
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
   cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent-subtle) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .tech-card:hover {
   border-color: var(--accent);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px var(--accent-glow);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 24px var(--accent-glow);
 }
 
-.tech-card-icon { font-size: 20px; flex-shrink: 0; }
-.tech-card-name { font-size: 13.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 1px; }
+.tech-card:hover::after { opacity: 1; }
+
+.tech-card-icon-wrap {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--accent-subtle);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.tech-card:hover .tech-card-icon-wrap { transform: rotate(-8deg) scale(1.15); }
+
+.tech-card-body { position: relative; z-index: 1; }
+.tech-card-name { font-size: 13.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
 .tech-card-sub { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
 
-/* Soft skills */
-.soft-chips { display: flex; flex-wrap: wrap; gap: 10px; }
-
-.soft-chip {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 9px 18px;
-  background: var(--accent-subtle);
-  border: 1.5px solid rgba(200,82,42,0.2);
-  border-radius: 100px;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--accent);
-  transition: var(--transition);
+/* ---- Soft skills ---- */
+.soft-skills-wrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
 }
 
-.soft-chip:hover { background: rgba(200,82,42,0.15); transform: translateY(-2px); }
-.soft-chip-dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+.soft-skill-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex; align-items: center; gap: 12px;
+  transition: var(--transition);
+  cursor: default;
+}
 
-@media (max-width: 900px) { .skills-grid { grid-template-columns: 1fr; } .skills-stats { grid-template-columns: 1fr; } }
-@media (max-width: 640px) { .tech-grid { grid-template-columns: 1fr 1fr; } }
+.soft-skill-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px var(--accent-glow);
+  background: var(--accent-subtle);
+}
+
+.soft-skill-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--accent-subtle);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.soft-skill-card:hover .soft-skill-icon {
+  background: var(--accent);
+}
+
+.soft-skill-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.soft-skill-desc {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 1px;
+}
+
+@media (max-width: 900px) {
+  .skills-grid { grid-template-columns: 1fr; }
+  .skills-stats { grid-template-columns: 1fr; }
+  .soft-skills-wrap { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .tech-grid { grid-template-columns: 1fr 1fr; }
+  .soft-skills-wrap { grid-template-columns: 1fr; }
+  .skills-filter-bar { gap: 6px; }
+  .skills-filter-btn { padding: 7px 14px; font-size: 12px; }
+}
 
 /* ==============================
    PROJECTS — Stacked cards
@@ -1693,11 +1977,11 @@ body::before {
 <!-- LOADER -->
 <div id="loader">
   <div class="loader-inner">
-    <div class="loader-name">Swathi<span>.</span></div>
+    <div class="loader-name">Swathi👨‍💻<span>.</span></div>
     <div class="loader-track">
       <div class="loader-fill"></div>
     </div>
-    <div class="loader-label">Loading portfolio...</div>
+    <div class="loader-label">Loading portfolio...🌐</div>
   </div>
 </div>
 
@@ -1707,11 +1991,11 @@ body::before {
     <div class="nav-inner">
       <a href="#" class="nav-logo">SR<span class="logo-dot">.</span></a>
       <ul class="nav-links">
-        <li><a href="#about" class="nav-link">About</a></li>
-        <li><a href="#skills" class="nav-link">Skills</a></li>
-        <li><a href="#projects" class="nav-link">Projects</a></li>
-        <li><a href="#certificates" class="nav-link">Certs</a></li>
-        <li><a href="#contact" class="nav-link">Contact</a></li>
+        <li><a href="#about" class="nav-link">About✨</a></li>
+        <li><a href="#skills" class="nav-link">Skills🎯</a></li>
+        <li><a href="#projects" class="nav-link">Projects🚀</a></li>
+        <li><a href="#certificates" class="nav-link">Certificates📜</a></li>
+        <li><a href="#contact" class="nav-link">Contact📞</a></li>
       </ul>
       <div class="nav-actions">
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
@@ -1736,7 +2020,7 @@ body::before {
     <li><a href="#about" onclick="closeMobileMenu()"><span>01</span>About</a></li>
     <li><a href="#skills" onclick="closeMobileMenu()"><span>02</span>Skills</a></li>
     <li><a href="#projects" onclick="closeMobileMenu()"><span>03</span>Projects</a></li>
-    <li><a href="#certificates" onclick="closeMobileMenu()"><span>04</span>Certs</a></li>
+    <li><a href="#certificates" onclick="closeMobileMenu()"><span>04</span>Certificates</a></li>
     <li><a href="#contact" onclick="closeMobileMenu()"><span>05</span>Contact</a></li>
   </ul>
 </div>
@@ -1771,7 +2055,7 @@ body::before {
           </div>
           <div class="stat">
             <div class="stat-num">3<small>+</small></div>
-            <div class="stat-label">Certs</div>
+            <div class="stat-label">Certificates</div>
           </div>
           <div class="stat">
             <div class="stat-num">7.78<small>/10</small></div>
@@ -1949,6 +2233,7 @@ body::before {
     <div class="section-header reveal">
       <span class="section-tag">Technical Skills</span>
       <h2 class="section-title">My <span>Toolbox</span></h2>
+      <p class="section-sub">Technologies, languages, and tools I work with — from low-level C/C++ to full-stack web development.</p>
     </div>
 
     <!-- Stats Row -->
@@ -1967,132 +2252,229 @@ body::before {
       </div>
     </div>
 
-    <div class="skills-grid">
-      <div class="skill-cat reveal reveal-delay-1">
-        <div class="skill-cat-header">
-          <span class="skill-cat-icon">💻</span>
-          <h3>Languages</h3>
-        </div>
-        <div class="skill-bars">
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">C / C++</span><span class="skill-bar-pct">92%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="92"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">Python</span><span class="skill-bar-pct">85%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="85"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">JavaScript</span><span class="skill-bar-pct">75%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="75"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">Java</span><span class="skill-bar-pct">60%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="60"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">PHP</span><span class="skill-bar-pct">75%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="75"></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="skill-cat reveal reveal-delay-2">
-        <div class="skill-cat-header">
-          <span class="skill-cat-icon">🌐</span>
-          <h3>Web Technologies</h3>
-        </div>
-        <div class="skill-bars">
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">HTML5</span><span class="skill-bar-pct">90%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="90"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">CSS3</span><span class="skill-bar-pct">82%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="82"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">React.js</span><span class="skill-bar-pct">68%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="68"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">Node.js</span><span class="skill-bar-pct">55%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="55"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">XML</span><span class="skill-bar-pct">70%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="70"></div></div>
-          </div>
-        </div>
-      </div>
-      <div class="skill-cat reveal reveal-delay-3">
-        <div class="skill-cat-header">
-          <span class="skill-cat-icon">🗄️</span>
-          <h3>Databases &amp; Tools</h3>
-        </div>
-        <div class="skill-bars">
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">MySQL</span><span class="skill-bar-pct">80%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="80"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">SQL</span><span class="skill-bar-pct">82%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="82"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">MongoDB</span><span class="skill-bar-pct">50%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="50"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">Power BI</span><span class="skill-bar-pct">55%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="55"></div></div>
-          </div>
-          <div class="skill-bar">
-            <div class="skill-bar-head"><span class="skill-bar-name">Git / GitHub</span><span class="skill-bar-pct">70%</span></div>
-            <div class="skill-track"><div class="skill-fill" data-width="70"></div></div>
-          </div>
-        </div>
-      </div>
+    <!-- Filter Bar -->
+    <div class="skills-filter-bar reveal reveal-delay-2">
+      <button class="skills-filter-btn active" data-filter="all">All Skills <span class="filter-count">15</span></button>
+      <button class="skills-filter-btn" data-filter="languages">Languages <span class="filter-count">5</span></button>
+      <button class="skills-filter-btn" data-filter="web">Web Tech <span class="filter-count">5</span></button>
+      <button class="skills-filter-btn" data-filter="data">DB &amp; Tools <span class="filter-count">5</span></button>
     </div>
 
+    <!-- Skill Category Cards -->
+    <div class="skills-grid">
+
+      <!-- Languages -->
+      <div class="skill-cat reveal reveal-delay-1" data-category="languages">
+        <div class="skill-cat-header">
+          <div class="skill-cat-icon-wrap">💻</div>
+          <h3>Languages</h3>
+          <span class="skill-cat-count">5 skills</span>
+        </div>
+        <div class="skill-pills">
+          <div class="skill-pill" data-delay="0">
+            <span class="pill-pulse"></span>
+            <span class="pill-icon">⚡</span>
+            <span class="pill-name">C / C++</span>
+            <span class="pill-level expert">Expert</span>
+          </div>
+          <div class="skill-pill" data-delay="1">
+            <span class="pill-icon">🐍</span>
+            <span class="pill-name">Python</span>
+            <span class="pill-level advanced">Advanced</span>
+          </div>
+          <div class="skill-pill" data-delay="2">
+            <span class="pill-icon">🟨</span>
+            <span class="pill-name">JavaScript</span>
+            <span class="pill-level inter">Intermediate</span>
+          </div>
+          <div class="skill-pill" data-delay="3">
+            <span class="pill-icon">🐘</span>
+            <span class="pill-name">PHP</span>
+            <span class="pill-level inter">Intermediate</span>
+          </div>
+          <div class="skill-pill" data-delay="4">
+            <span class="pill-icon">☕</span>
+            <span class="pill-name">Java</span>
+            <span class="pill-level learning">Learning</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Web Technologies -->
+      <div class="skill-cat reveal reveal-delay-2" data-category="web">
+        <div class="skill-cat-header">
+          <div class="skill-cat-icon-wrap">🌐</div>
+          <h3>Web Technologies</h3>
+          <span class="skill-cat-count">5 skills</span>
+        </div>
+        <div class="skill-pills">
+          <div class="skill-pill" data-delay="0">
+            <span class="pill-pulse"></span>
+            <span class="pill-icon">🧱</span>
+            <span class="pill-name">HTML5</span>
+            <span class="pill-level expert">Expert</span>
+          </div>
+          <div class="skill-pill" data-delay="1">
+            <span class="pill-icon">🎨</span>
+            <span class="pill-name">CSS3</span>
+            <span class="pill-level advanced">Advanced</span>
+          </div>
+          <div class="skill-pill" data-delay="2">
+            <span class="pill-icon">⚛️</span>
+            <span class="pill-name">React.js</span>
+            <span class="pill-level inter">Intermediate</span>
+          </div>
+          <div class="skill-pill" data-delay="3">
+            <span class="pill-icon">📄</span>
+            <span class="pill-name">XML</span>
+            <span class="pill-level inter">Intermediate</span>
+          </div>
+          <div class="skill-pill" data-delay="4">
+            <span class="pill-icon">🟢</span>
+            <span class="pill-name">Node.js</span>
+            <span class="pill-level learning">Learning</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Databases & Tools -->
+      <div class="skill-cat reveal reveal-delay-3" data-category="data">
+        <div class="skill-cat-header">
+          <div class="skill-cat-icon-wrap">🗄️</div>
+          <h3>Databases &amp; Tools</h3>
+          <span class="skill-cat-count">5 skills</span>
+        </div>
+        <div class="skill-pills">
+          <div class="skill-pill" data-delay="0">
+            <span class="pill-pulse"></span>
+            <span class="pill-icon">🗃️</span>
+            <span class="pill-name">SQL</span>
+            <span class="pill-level advanced">Advanced</span>
+          </div>
+          <div class="skill-pill" data-delay="1">
+            <span class="pill-icon">🐬</span>
+            <span class="pill-name">MySQL</span>
+            <span class="pill-level advanced">Advanced</span>
+          </div>
+          <div class="skill-pill" data-delay="2">
+            <span class="pill-icon">🐙</span>
+            <span class="pill-name">Git / GitHub</span>
+            <span class="pill-level inter">Intermediate</span>
+          </div>
+          <div class="skill-pill" data-delay="3">
+            <span class="pill-icon">📊</span>
+            <span class="pill-name">Power BI</span>
+            <span class="pill-level learning">Learning</span>
+          </div>
+          <div class="skill-pill" data-delay="4">
+            <span class="pill-icon">🍃</span>
+            <span class="pill-name">MongoDB</span>
+            <span class="pill-level learning">Learning</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /skills-grid -->
+
+    <!-- Core Concepts & Tools -->
     <div class="reveal reveal-delay-2">
       <div class="core-label">Core Concepts &amp; Tools</div>
       <div class="tech-grid">
         <div class="tech-card">
-          <span class="tech-card-icon">🌳</span>
-          <div><div class="tech-card-name">Data Structures</div><div class="tech-card-sub">Arrays, Stacks, Trees, Graphs</div></div>
+          <div class="tech-card-icon-wrap">🌳</div>
+          <div class="tech-card-body"><div class="tech-card-name">Data Structures</div><div class="tech-card-sub">Arrays · Stacks · Trees · Graphs</div></div>
         </div>
         <div class="tech-card">
-          <span class="tech-card-icon">📦</span>
-          <div><div class="tech-card-name">OOP</div><div class="tech-card-sub">Classes, Inheritance, Polymorphism</div></div>
+          <div class="tech-card-icon-wrap">📦</div>
+          <div class="tech-card-body"><div class="tech-card-name">OOP</div><div class="tech-card-sub">Classes · Inheritance · Polymorphism</div></div>
         </div>
         <div class="tech-card">
-          <span class="tech-card-icon">🗃️</span>
-          <div><div class="tech-card-name">DBMS</div><div class="tech-card-sub">Relational DB, Normalization</div></div>
+          <div class="tech-card-icon-wrap">🗃️</div>
+          <div class="tech-card-body"><div class="tech-card-name">DBMS</div><div class="tech-card-sub">Relational DB · Normalization</div></div>
         </div>
         <div class="tech-card">
-          <span class="tech-card-icon">🔧</span>
-          <div><div class="tech-card-name">VS Code</div><div class="tech-card-sub">Primary IDE &amp; Extensions</div></div>
+          <div class="tech-card-icon-wrap">🔧</div>
+          <div class="tech-card-body"><div class="tech-card-name">VS Code</div><div class="tech-card-sub">Primary IDE &amp; Extensions</div></div>
         </div>
         <div class="tech-card">
-          <span class="tech-card-icon">☕</span>
-          <div><div class="tech-card-name">Eclipse</div><div class="tech-card-sub">Java Development</div></div>
+          <div class="tech-card-icon-wrap">☕</div>
+          <div class="tech-card-body"><div class="tech-card-name">Eclipse</div><div class="tech-card-sub">Java Development</div></div>
         </div>
         <div class="tech-card">
-          <span class="tech-card-icon">🧩</span>
-          <div><div class="tech-card-name">Problem Solving</div><div class="tech-card-sub">DSA, Logic Building</div></div>
+          <div class="tech-card-icon-wrap">🧩</div>
+          <div class="tech-card-body"><div class="tech-card-name">Problem Solving</div><div class="tech-card-sub">DSA · Logic Building</div></div>
         </div>
       </div>
-      <div class="core-label" style="margin-top:10px">Soft Skills</div>
-      <div class="soft-chips">
-        <div class="soft-chip"><span class="soft-chip-dot"></span>Problem Solving</div>
-        <div class="soft-chip"><span class="soft-chip-dot"></span>Team Collaboration</div>
-        <div class="soft-chip"><span class="soft-chip-dot"></span>Adaptability</div>
-        <div class="soft-chip"><span class="soft-chip-dot"></span>Quick Learning</div>
-        <div class="soft-chip"><span class="soft-chip-dot"></span>Communication</div>
+
+      <!-- Soft Skills -->
+      <div class="core-label" style="margin-top:36px">Soft Skills</div>
+      <div class="soft-skills-wrap">
+        <div class="soft-skill-card">
+          <div class="soft-skill-icon">🧠</div>
+          <div><div class="soft-skill-name">Problem Solving</div><div class="soft-skill-desc">analytical · creative</div></div>
+        </div>
+        <div class="soft-skill-card">
+          <div class="soft-skill-icon">🤝</div>
+          <div><div class="soft-skill-name">Team Collaboration</div><div class="soft-skill-desc">agile · cross-functional</div></div>
+        </div>
+        <div class="soft-skill-card">
+          <div class="soft-skill-icon">⚡</div>
+          <div><div class="soft-skill-name">Adaptability</div><div class="soft-skill-desc">flexible · growth mindset</div></div>
+        </div>
+        <div class="soft-skill-card">
+          <div class="soft-skill-icon">📚</div>
+          <div><div class="soft-skill-name">Quick Learning</div><div class="soft-skill-desc">self-driven · curious</div></div>
+        </div>
+        <div class="soft-skill-card">
+          <div class="soft-skill-icon">💬</div>
+          <div><div class="soft-skill-name">Communication</div><div class="soft-skill-desc">clear · concise</div></div>
+        </div>
       </div>
     </div>
+
   </div>
 </section>
+
+<script>
+/* ---- Skills filter ---- */
+document.querySelectorAll('.skills-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.skills-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.getAttribute('data-filter');
+    document.querySelectorAll('.skill-cat[data-category]').forEach(card => {
+      if (filter === 'all' || card.getAttribute('data-category') === filter) {
+        card.classList.remove('hidden');
+        /* re-trigger pill entrance */
+        card.querySelectorAll('.skill-pill').forEach((p,i) => {
+          p.classList.remove('pill-visible');
+          void p.offsetWidth;
+          setTimeout(() => p.classList.add('pill-visible'), 60 + i * 70);
+        });
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  });
+});
+
+/* ---- Pill entrance animation on scroll ---- */
+const pillObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const pills = entry.target.querySelectorAll('.skill-pill');
+      pills.forEach((pill, i) => {
+        const delay = 120 + i * 80;
+        pill.style.setProperty('--pill-shimmer-delay', (delay / 1000 + 0.25) + 's');
+        setTimeout(() => pill.classList.add('pill-visible'), delay);
+      });
+      pillObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.skill-cat').forEach(cat => pillObserver.observe(cat));
+</script>
 
 <!-- PROJECTS -->
 <section id="projects" class="section projects-section">
@@ -2124,7 +2506,7 @@ body::before {
             <span class="tech-badge">Arrays</span>
           </div>
           <div class="project-links">
-            <a href="https://github.com/" target="_blank" class="proj-btn proj-ghost">
+            <a href="https://github.com/Spider-Man-spec/Hospital-Management-System" target="_blank" class="proj-btn proj-ghost">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
               Code
             </a>
@@ -2154,7 +2536,7 @@ body::before {
             <span class="tech-badge">JavaScript</span>
           </div>
           <div class="project-links">
-            <a href="https://github.com/" target="_blank" class="proj-btn proj-ghost">
+            <a href="https://github.com/Spider-Man-spec/Online-Job-Portal" target="_blank" class="proj-btn proj-ghost">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
               Code
             </a>
@@ -2164,29 +2546,80 @@ body::before {
       </div>
 
       <div class="project-card reveal reveal-delay-3" style="--card-accent:#8B5CF6">
+  <div class="project-card-top">
+    <div class="project-icon">🌐</div>
+    <div class="project-num">03</div>
+  </div>
+
+  <div>
+    <h3 class="project-title">Portfolio Website</h3>
+
+          <p class="project-desc">A responsive personal portfolio website built with React.js, featuring dark/light mode, smooth animations, and optimized performance.</p>
+
+          <ul class="project-highlights">
+
+            <li><span class="highlight-dot"></span>Dark/Light theme toggle</li>
+
+            <li><span class="highlight-dot"></span>Smooth scroll &amp; animations</li>
+
+            <li><span class="highlight-dot"></span>Mobile-first responsive design</li>
+
+          </ul>
+
+        </div>
+
+        <div class="project-footer">
+
+          <div class="project-tech">
+
+            <span class="tech-badge">React</span>
+
+            <span class="tech-badge">JavaScript</span>
+
+            <span class="tech-badge">CSS3</span>
+
+            <span class="tech-badge">Vite</span>
+
+          </div>
+
+          <div class="project-links">
+
+            <a href="https://github.com/Spider-Man-spec/Swathi-s-Portfolio" target="_blank" class="proj-btn proj-ghost">Code</a>
+
+            <a href="resigned_portfolio2.html" target="_blank" class="proj-btn proj-solid">Demo</a>
+
+          </div>
+
+        </div>
+
+      </div>
+</div>
+
+      <div class="project-card reveal reveal-delay-4" style="--card-accent:#EC4899">
         <div class="project-card-top">
-          <div class="project-icon">🌐</div>
-          <div class="project-num">03</div>
+          <div class="project-icon">🏦</div>
+          <div class="project-num">05</div>
         </div>
         <div>
-          <h3 class="project-title">Portfolio Website</h3>
-          <p class="project-desc">A responsive personal portfolio website built with React.js, featuring dark/light mode, smooth animations, and optimized performance.</p>
+          <h3 class="project-title">Banking System</h3>
+          <p class="project-desc">A console-based Bank Management System built in C that simulates core banking operations including account creation, deposit, withdrawal, and balance inquiry — all through an interactive menu-driven interface.</p>
           <ul class="project-highlights">
-            <li><span class="highlight-dot"></span>Dark/Light theme toggle</li>
-            <li><span class="highlight-dot"></span>Smooth scroll &amp; animations</li>
-            <li><span class="highlight-dot"></span>Mobile-first responsive design</li>
+            <li><span class="highlight-dot"></span>Account creation &amp; management</li>
+            <li><span class="highlight-dot"></span>Deposit, withdrawal &amp; balance inquiry</li>
+            <li><span class="highlight-dot"></span>Menu-driven console interface</li>
           </ul>
         </div>
         <div class="project-footer">
           <div class="project-tech">
-            <span class="tech-badge">React</span>
-            <span class="tech-badge">JavaScript</span>
-            <span class="tech-badge">CSS3</span>
-            <span class="tech-badge">Vite</span>
+            <span class="tech-badge">C Programming</span>
+            <span class="tech-badge">Console-based</span>
+            <span class="tech-badge">File Handling</span>
           </div>
           <div class="project-links">
-            <a href="https://github.com/" target="_blank" class="proj-btn proj-ghost">Code</a>
-            <a href="resigned_portfolio.html" class="proj-btn proj-solid">Demo</a>
+            <a href="https://github.com/Spider-Man-spec" target="_blank" class="proj-btn proj-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+              Code
+            </a>
           </div>
         </div>
       </div>
@@ -2212,7 +2645,7 @@ body::before {
             <span class="tech-badge">JavaScript</span>
           </div>
           <div class="project-links">
-            <a href="https://github.com/" target="_blank" class="proj-btn proj-ghost">Code</a>
+            <a href="https://github.com/Spider-Man-spec" target="_blank" class="proj-btn proj-ghost">Code</a>
             <button onclick="document.getElementById('calc-modal').style.display='flex'" class="proj-btn proj-solid">Try It</button>
           </div>
         </div>
@@ -2256,6 +2689,7 @@ body::before {
             Verified
           </div>
         </div>
+        
         <h3 class="cert-title">Basic Data Structures and Algorithms</h3>
         <p class="cert-desc">Arrays, linked lists, stacks, queues, trees, sorting algorithms, and Big O notation.</p>
         <div class="cert-footer">
@@ -2263,7 +2697,7 @@ body::before {
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
             <span>Online Platform</span><span class="cert-year">2025</span>
           </div>
-          <a href="Data Structures and Algorithms certificate.pdf" class="cert-btn">View →</a>
+          <a href="datastructures certificate.pdf" class="cert-btn">View →</a>
         </div>
       </div>
 
@@ -2282,7 +2716,64 @@ body::before {
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
             <span>Online Platform</span><span class="cert-year">2025</span>
           </div>
-          <a href="#" class="cert-btn">View →</a>
+          <a href="python certificate.pdf" class="cert-btn">View →</a>
+        </div>
+      </div>
+    </div>
+      <div class="cert-card reveal reveal-delay-4" style="--cert-accent:#EC4899">
+        <div class="cert-card-top">
+          <div class="cert-icon-wrap"><span>🎨</span></div>
+          <div class="cert-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+            Verified
+          </div>
+        </div>
+        <h3 class="cert-title">Design Canvas</h3>
+        <p class="cert-desc">Hands-on training in visual design principles, UI layout, typography, color theory, and creating polished digital designs using canvas-based tools.</p>
+        <div class="cert-footer">
+          <div class="cert-meta">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
+            <span>Offline Platform</span><span class="cert-year">2024</span>
+          </div>
+          <a href="Design Canvas certificate.pdf" class="cert-btn">View →</a>
+        </div>
+      </div>
+
+      <div class="cert-card reveal reveal-delay-5" style="--cert-accent:#6366F1">
+        <div class="cert-card-top">
+          <div class="cert-icon-wrap"><span>💡</span></div>
+          <div class="cert-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+            Verified
+          </div>
+        </div>
+        <h3 class="cert-title">IT Quiz</h3>
+        <p class="cert-desc">Assessment-based certification covering core IT concepts including networking, operating systems, hardware fundamentals, and general computer science knowledge.</p>
+        <div class="cert-footer">
+          <div class="cert-meta">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
+            <span>Offline Platform</span><span class="cert-year">2024</span>
+          </div>
+          <a href="IT quiz certificate.pdf" class="cert-btn">View →</a>
+        </div>
+      </div>
+
+      <div class="cert-card reveal reveal-delay-6" style="--cert-accent:#14B8A6">
+        <div class="cert-card-top">
+          <div class="cert-icon-wrap"><span>🖥️</span></div>
+          <div class="cert-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+            Verified
+          </div>
+        </div>
+        <h3 class="cert-title">IT Manager</h3>
+        <p class="cert-desc">Certification in IT management fundamentals covering project planning, team leadership, IT infrastructure oversight, and best practices for managing technology operations.</p>
+        <div class="cert-footer">
+          <div class="cert-meta">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"/><circle cx="12" cy="8" r="6"/></svg>
+            <span>Offline Platform</span><span class="cert-year">2024</span>
+          </div>
+          <a href="IT manager certificate.pdf" class="cert-btn">View →</a>
         </div>
       </div>
     </div>
@@ -2290,6 +2781,8 @@ body::before {
       🏆 <span>All certificates earned through self-paced online learning. Currently pursuing more certifications in React, Node.js, and Cloud.</span>
     </div>
   </div>
+
+  
 </section>
 
 <!-- CONTACT -->
@@ -2333,23 +2826,17 @@ body::before {
 
         <div class="social-divider"><span>Find me on</span></div>
         <div class="social-cards">
-          <a href="https://github.com/" target="_blank" class="social-card">
+          <a href="https://github.com/Spider-Man-spec" target="_blank" class="social-card">
             <div class="sc-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
             </div>
-            <div><div class="sc-label">GitHub</div><div class="sc-handle">@your-handle</div></div>
+            <div><div class="sc-label">GitHub</div><div class="sc-handle">@Spider-Man-spec</div></div>
           </a>
           <a href="https://www.linkedin.com/in/swathi-ravi-339220300" target="_blank" class="social-card">
             <div class="sc-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
             </div>
             <div><div class="sc-label">LinkedIn</div><div class="sc-handle">swathi-ravi-339220300</div></div>
-          </a>
-          <a href="https://instagram.com/" target="_blank" class="social-card">
-            <div class="sc-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-            </div>
-            <div><div class="sc-label">Instagram</div><div class="sc-handle">@your-handle</div></div>
           </a>
         </div>
       </div>
@@ -2406,14 +2893,11 @@ body::before {
         <div class="footer-logo">Swathi R<span class="logo-dot">.</span></div>
         <p class="footer-tagline">Full Stack Developer in the Making<br>Building one project at a time from Bengaluru 🇮🇳</p>
         <div class="footer-socials">
-          <a href="https://github.com/" class="footer-social" target="_blank" aria-label="GitHub">
+          <a href="https://github.com/Spider-Man-spec" class="footer-social" target="_blank" aria-label="GitHub">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
           </a>
           <a href="https://www.linkedin.com/in/swathi-ravi-339220300" class="footer-social" target="_blank" aria-label="LinkedIn">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-          <a href="https://instagram.com/" class="footer-social" target="_blank" aria-label="Instagram">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
           </a>
         </div>
       </div>
@@ -2514,6 +2998,55 @@ body::before {
     </div>
   </div>
 </div>
+<script>
+document.addEventListener("keydown", function (e) {
+  const modal = document.getElementById("calc-modal");
+
+  // Only work when calculator is visible
+  if (!modal || modal.style.display === "none") return;
+
+  const key = e.key;
+
+  // Numbers
+  if (/^[0-9]$/.test(key)) {
+    calcInput(key);
+  }
+
+  // Operators
+  else if (["+", "-", "*", "/", ".", "(", ")"].includes(key)) {
+    calcInput(key);
+  }
+
+  // Enter or =
+  else if (key === "Enter" || key === "=") {
+    e.preventDefault();
+    calcEquals();
+  }
+
+  // Backspace
+  else if (key === "Backspace") {
+    if (typeof calcExpr !== "undefined") {
+      calcExpr = calcExpr.slice(0, -1);
+      calcUpdate();
+    }
+  }
+
+  // Delete = AC
+  else if (key === "Delete") {
+    calcFunc("AC");
+  }
+
+  // Escape = Close
+  else if (key === "Escape") {
+    modal.style.display = "none";
+  }
+
+  // Percentage
+  else if (key === "%") {
+    calcFunc("%");
+  }
+});
+</script>
 
 <script>
 /* ==============================
@@ -2810,16 +3343,6 @@ function calcSetMode(m){
   document.getElementById("tab-sci").style.color=m==="sci"?"#fff":"var(--text-secondary)";
 }
 
-document.addEventListener("keydown",function(e){
-  var d=document.getElementById("calc-modal");
-  if(d.style.display!=="flex")return;
-  if(e.key>="0"&&e.key<="9")calcInput(e.key);
-  else if(["+","-","*","/"].includes(e.key))calcInput(e.key);
-  else if(e.key===".")calcInput(".");
-  else if(e.key==="Enter"||e.key==="=")calcEquals();
-  else if(e.key==="Backspace"){calcVal=calcVal.length>1?calcVal.slice(0,-1):"0";calcExpr=calcExpr.slice(0,-1);calcUpdate();}
-  else if(e.key==="Escape")d.style.display="none";
-});
 </script>
 </body>
 </html>
